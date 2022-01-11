@@ -15,6 +15,7 @@ import java.util.Map;
 
 @WebServlet(name = "frontControllerServletV1", urlPatterns = "/front-controller/v1/*")
 public class FrontControllerServletV1 extends HttpServlet {
+
     private Map<String, ControllerV1> controllerMap = new HashMap<>();
 
     public FrontControllerServletV1() {
@@ -26,5 +27,16 @@ public class FrontControllerServletV1 extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("FrontControllerServletV1.service");
+
+        // front-controller/v1/members
+        String requestURI = request.getRequestURI();
+
+        ControllerV1 controller = controllerMap.get(requestURI);
+        if (controller == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        controller.process(request, response);
     }
 }
